@@ -1,0 +1,10 @@
+name: astrbot_plugin_gacha
+display_name: 本地文件抽卡
+desc: 纯本地存储、自带 WebUI 管理面板的抽卡插件。所有内容以文件形式组织，不依赖数据库。支持多卡池、自定义权重、每日次数、群白名单、图片上传。详见仓库 README。
+version: 1.0.0
+author: VW1024
+repo: https://github.com/VW1024/astrbot_plugin_gacha
+astrbot_version: ">=4.17.0"
+tags:
+  - 抽卡
+  - 娱乐

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡池管理</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header class="topbar">
+            <h1>卡池管理</h1>
+            <div class="topbar-actions">
+                <div id="normalActions" class="topbar-actions">
+                    <button id="refreshBtn" class="refresh-btn" data-search-skip="all">刷新</button>
+                    <button id="editToggle" class="edit-btn">进入编辑模式</button>
+                </div>
+                <div id="editActions" class="topbar-actions" style="display:none;">
+                    <button id="discardEditBtn" class="discard-btn">放弃修改</button>
+                    <button id="undoBtn" class="undo-btn">撤回</button>
+                    <button id="saveEditBtn" class="save-btn">保存当前编辑</button>
+                    <button id="endEditBtn" class="end-btn">结束编辑</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="editing-banner">
+            <span id="editBannerText">编辑模式已开启</span>
+        </div>
+
+        <div class="main">
+            <aside class="panel pool-panel">
+                <div class="panel-title-row">
+                    <h3 class="panel-title">卡池</h3>
+                    <button id="poolSearchToggle" class="icon-btn" title="筛选">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="5" x2="21" y2="5"/>
+                            <line x1="3" y1="5" x2="10" y2="14"/>
+                            <line x1="21" y1="5" x2="14" y2="14"/>
+                            <line x1="10" y1="14" x2="10" y2="20"/>
+                            <line x1="14" y1="14" x2="14" y2="20"/>
+                            <line x1="10" y1="20" x2="14" y2="20"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="filter-row" id="poolFilterRow"></div>
+                <div class="divider"></div>
+
+                <div class="sort-row">
+                    <button id="poolAddBtn" class="icon-btn" title="新建卡池" style="display:none;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2.4"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                    </button>
+                    <div class="sort-dropdown" id="poolSortDropdown">
+                        <button class="sort-trigger" id="poolSortTrigger" title="排序">
+                            <svg width="10" height="6" viewBox="0 0 10 6">
+                                <path d="M0 0 L5 6 L10 0 Z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                        <ul class="sort-menu" id="poolSortMenu">
+                            <li data-value="default">默认排序</li>
+                            <li data-value="name-asc">按字典正序</li>
+                            <li data-value="name-desc">按字典逆序</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <ul id="poolList" class="list"></ul>
+            </aside>
+
+            <aside class="panel card-panel">
+                <div class="panel-title-row">
+                    <h3 class="panel-title">卡片</h3>
+                    <button id="cardSearchToggle" class="icon-btn" title="筛选">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="5" x2="21" y2="5"/>
+                            <line x1="3" y1="5" x2="10" y2="14"/>
+                            <line x1="21" y1="5" x2="14" y2="14"/>
+                            <line x1="10" y1="14" x2="10" y2="20"/>
+                            <line x1="14" y1="14" x2="14" y2="20"/>
+                            <line x1="10" y1="20" x2="14" y2="20"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="filter-row" id="cardFilterRow"></div>
+                <div class="divider"></div>
+
+                <div class="sort-row">
+                    <button id="cardAddBtn" class="icon-btn" title="添加卡片" style="display:none;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2.4"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                    </button>
+                    <div class="sort-dropdown" id="cardSortDropdown">
+                        <button class="sort-trigger" id="cardSortTrigger" title="排序">
+                            <svg width="10" height="6" viewBox="0 0 10 6">
+                                <path d="M0 0 L5 6 L10 0 Z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                        <ul class="sort-menu" id="cardSortMenu">
+                            <li data-value="default">默认排序</li>
+                            <li data-value="name-asc">按字典正序</li>
+                            <li data-value="name-desc">按字典逆序</li>
+                            <li data-value="weight-desc">权重 高→低</li>
+                            <li data-value="weight-asc">权重 低→高</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <ul id="cardList" class="list"></ul>
+            </aside>
+
+            <section class="panel detail-panel">
+                <div id="emptyHint" class="empty-hint">请选择卡池或卡片</div>
+
+                <div id="poolDetail" class="detail-content" style="display:none;">
+                    <div class="detail-header">
+                        <div class="detail-title" id="poolTitle"></div>
+                        <button id="deletePoolBtn" class="delete-btn" style="display:none;">删除卡池</button>
+                    </div>
+
+                    <div class="pool-stats" id="poolStats"></div>
+
+                    <div id="poolInfoRows" class="field-list"></div>
+
+                    <div class="section">
+                        <div class="section-title">卡池内容</div>
+                        <div class="weight-toolbar">
+                            <button id="simulateBtn" class="simulate-btn">模拟抽卡</button>
+                        </div>
+                        <div id="weightTableWrap"></div>
+                    </div>
+                </div>
+
+                <div id="cardDetail" class="detail-content" style="display:none;">
+                    <div class="detail-header">
+                        <div class="detail-title" id="cardTitle"></div>
+                        <button id="deleteCardBtn" class="delete-btn" style="display:none;">删除卡片</button>
+                    </div>
+
+                    <div class="card-stats" id="cardStats"></div>
+
+                    <div class="detail-image-wrap" id="cardImageWrap">
+                        <img id="detailImage" alt="" title="点击放大" />
+                    <div class="image-toolbar" id="imageToolbar" style="display:none;">
+                        <button id="uploadImageBtn" class="image-btn">上传 / 替换图片</button>
+                        <button id="deleteImageBtn" class="image-btn danger">删除图片</button>
+                        <button id="previewBtn" class="image-btn">预览抽卡效果</button>
+                    </div>
+                    </div>
+                    <div id="cardFields" class="field-list"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="simulateModal" class="modal" style="display:none;">
+        <div class="modal-mask" id="simulateMask"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="simulateClose">×</button>
+            <div class="detail-title" id="simulateTitle"></div>
+            <div class="detail-image-wrap">
+                <img id="simulateImage" alt="" />
+            </div>
+            <div id="simulateFields" class="field-list"></div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="modal" style="display:none;">
+        <div class="modal-mask" id="imageModalMask"></div>
+        <div class="image-modal-content">
+            <img id="imageModalImg" alt="" />
+        </div>
+    </div>
+
+    <div id="addModal" class="modal" style="display:none;">
+        <div class="modal-mask" id="addModalMask"></div>
+        <div class="modal-content add-modal-content">
+            <button class="modal-close" id="addModalClose">×</button>
+            <div class="detail-title" id="addModalTitle">新建卡池</div>
+            <div class="add-modal-rules" id="addModalRules"></div>
+            <div class="add-modal-tip" id="addModalTip"></div>
+            <input type="text" id="addModalInput" class="add-modal-input" />
+            <div class="add-modal-actions">
+                <button class="btn-cancel" id="addModalCancel">取消</button>
+                <button class="btn-confirm" id="addModalConfirm">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal" style="display:none;">
+        <div class="modal-mask" id="confirmModalMask"></div>
+        <div class="modal-content confirm-modal-content">
+            <div class="detail-title" id="confirmModalTitle">确认删除</div>
+            <div class="confirm-modal-body" id="confirmModalBody"></div>
+            <div class="add-modal-actions">
+                <button class="btn-cancel" id="confirmModalCancel">取消</button>
+                <button class="btn-danger" id="confirmModalOk">确认删除</button>
+            </div>
+        </div>
+    </div>
+    <input type="file" id="imageFileInput" accept="image/png" style="display:none;">
+
+    <div id="previewModal" class="modal" style="display:none;">
+        <div class="modal-mask" id="previewModalMask"></div>
+        <div class="modal-content preview-modal-content">
+            <button class="modal-close" id="previewModalClose">×</button>
+            <div class="detail-title">抽卡效果预览</div>
+            <div class="preview-chat" id="previewChat"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
